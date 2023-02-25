@@ -23,13 +23,28 @@ class FlowManager {
         
         let metadata = FCL.Metadata(appName: "Flowfolio",
                                     appDescription: "The NFT portfolio app built using Flow",
-                                    appIcon: URL(string: "")!, //TODO - icon string to be placed
-                                    location: URL(string: "")!, //TODO - web-url string to be placed
+                                    appIcon: URL(string: "https://i.imgur.com/jscDmDe.png")!, //TODO - icon string to be placed
+                                    location: URL(string: "https://monster-maker.vercel.app/")!, //TODO - web-url string to be placed
                                     accountProof: accountProof,
                                     walletConnectConfig: walletConnect)
         
         fcl.config(metadata: metadata,
                    env: defaultNetwork,
                    provider: defaultProvider)
+    }
+    
+    func checkCollectionVault() async throws -> Bool {
+        guard let address = fcl.currentUser?.addr else {
+            throw FCLError.unauthenticated
         }
+        
+        do {
+            let result: Bool = try await fcl.query(script: FlowfolioCadence.checkInit,
+                                                   args: [.address(address)]).decode()
+            return result
+        } catch {
+            print(error)
+            throw error
+        }
+    }
 }

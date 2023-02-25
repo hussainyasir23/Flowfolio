@@ -20,9 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         else {
             window = UIWindow(frame: UIScreen.main.bounds)
-            window?.rootViewController = ViewController()
+            window?.rootViewController = UINavigationController(rootViewController: SplashAnimationViewController())
             window?.makeKeyAndVisible()
         }
+        FlowManager.shared.setup()
         
         return true
     }
