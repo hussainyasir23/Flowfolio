@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.makeKeyAndVisible()
         }
         FlowManager.shared.setup()
-        
+        DataManager.shared.getLaLigaGolazosData()
         return true
     }
     

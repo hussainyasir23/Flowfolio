@@ -1,18 +1,37 @@
 //
-//  WalletConnectViewController.swift
+//  PortfolioViewController.swift
 //  Flowfolio
 //
-//  Created by Yasir on 23/02/23.
+//  Created by Yasir on 25/02/23.
 //
 
+import Foundation
 import UIKit
 import FCL
 
-class WalletConnectViewController: UIViewController {
+class PortfolioViewController: UIViewController {
     
     var isUserLoggedIn: Bool = false {
         didSet {
-            print("Debug: User Logged In")
+            if isUserLoggedIn {
+                print("*** Debug: User Login Successful ***")
+            }
+            else {
+                print("*** Debug: User Login Failed ***")
+            }
+        }
+    }
+    
+    var isInit: Bool = false {
+        didSet {
+            if isInit {
+                print("*** Debug: User Init Successful ***")
+                //DataManager.shared.getAllNFTIds()
+                self.navigationController?.pushViewController(WalletConnectViewController(), animated: true)
+            }
+            else {
+                print("*** Debug: User Init Failed ***")
+            }
         }
     }
     
@@ -21,7 +40,7 @@ class WalletConnectViewController: UIViewController {
         connectButton.translatesAutoresizingMaskIntoConstraints = false
         connectButton.setTitle("Connect Wallet", for: .normal)
         connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold, width: .standard)
-        connectButton.layer.cornerRadius = 4
+        connectButton.layer.cornerRadius = 8.9
         connectButton.layer.cornerCurve = .continuous
         connectButton.sizeToFit()
         connectButton.addTarget(self, action: #selector(didTapConnect), for: .touchUpInside)
@@ -37,7 +56,6 @@ class WalletConnectViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Debug: View Loaded")
         configureView()
         configureViewComponents()
         configureViewLayout()
@@ -46,11 +64,12 @@ class WalletConnectViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if let _ = fcl.currentUser {
-            print("User Authentication Successfull")
+            isUserLoggedIn = true
         }
         else {
-            print("User Authentication Faiure")
+            isUserLoggedIn = false
         }
+        check()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -64,7 +83,8 @@ class WalletConnectViewController: UIViewController {
     }
     
     func configureViewComponents() {
-        setGradientBackground()
+        //setGradientBackground()
+        view.backgroundColor = .black
         
         connectButton.backgroundColor = #colorLiteral(red: 0.1079129651, green: 0.8437187672, blue: 0.3764159679, alpha: 1)
         connectButton.setTitleColor(.black, for: .normal)
@@ -84,9 +104,8 @@ class WalletConnectViewController: UIViewController {
     }
     
     @objc func didTapConnect() {
-        //view.alpha = 0.5
-        print("Debug: Connect Tapped")
         fcl.openDiscovery()
+        DataManager.shared.invoke()
     }
     
     
@@ -103,5 +122,15 @@ class WalletConnectViewController: UIViewController {
         gradientLayer.frame = self.view.bounds
         
         self.view.layer.insertSublayer(gradientLayer, at:0)
+    }
+    
+    func check() {
+        Task {
+            do {
+                isInit = try await FlowManager.shared.checkCollectionVault()
+            } catch {
+                print(error)
+            }
+        }
     }
 }

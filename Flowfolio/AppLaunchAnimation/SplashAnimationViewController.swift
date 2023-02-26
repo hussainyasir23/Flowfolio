@@ -52,10 +52,12 @@ class SplashAnimationViewController: UIViewController {
         super.viewDidAppear(animated)
         
         player?.play()
+        player?.rate = 1.25
     }
     
     @objc func resumeAnimation() {
         player?.play()
+        player?.rate = 1.25
     }
     
     @objc func pauseAnimation() {
@@ -63,8 +65,13 @@ class SplashAnimationViewController: UIViewController {
     }
     
     @objc func animationFinished() {
-        let connectWalletVC = WalletConnectViewController()
-        connectWalletVC.modalPresentationStyle = .fullScreen
-        self.present(connectWalletVC, animated: true)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window?.rootViewController = UINavigationController(rootViewController: TabBarController(
+            marketplaceVC: MarketplaceViewController(),
+            searchVC: SearchViewController(),
+            portfolioVC: PortfolioViewController(),
+            discoverVC: DiscoverViewController(),
+            profileVC: ProfileViewController()))
+        appDelegate.window?.makeKeyAndVisible()
     }
 }
