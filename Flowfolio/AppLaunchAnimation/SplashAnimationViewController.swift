@@ -13,9 +13,15 @@ class SplashAnimationViewController: UIViewController {
     var player: AVPlayer?
     var playerLayer: AVPlayerLayer?
     
+    let laligaLogo: UIImageView = {
+        let laligaLogo = UIImageView()
+        return laligaLogo
+    }()
+    
     override func viewDidLoad() {
         view.backgroundColor = .white
         loadAnimationAsset()
+        configureViewLayout()
     }
     
     private func loadAnimationAsset() {
@@ -73,5 +79,16 @@ class SplashAnimationViewController: UIViewController {
             discoverVC: DiscoverViewController(),
             profileVC: ProfileViewController()))
         appDelegate.window?.makeKeyAndVisible()
+    }
+    
+    func configureViewLayout() {
+        view.addSubview(laligaLogo)
+        laligaLogo.image = UIImage(named: "LaligaLogo.png")
+        laligaLogo.contentMode = .scaleAspectFit
+        laligaLogo.translatesAutoresizingMaskIntoConstraints = false
+        laligaLogo.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -4).isActive = true
+        laligaLogo.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        laligaLogo.heightAnchor.constraint(equalToConstant: view.safeAreaLayoutGuide.layoutFrame.height/6).isActive = true
+        laligaLogo.widthAnchor.constraint(equalTo: laligaLogo.heightAnchor).isActive = true
     }
 }
