@@ -26,8 +26,6 @@ class PortfolioViewController: UIViewController {
         didSet {
             if isInit {
                 print("*** Debug: User Init Successful ***")
-                //DataManager.shared.getAllNFTIds()
-                self.navigationController?.pushViewController(WalletConnectViewController(), animated: true)
             }
             else {
                 print("*** Debug: User Init Failed ***")

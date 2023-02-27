@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SafariServices
 
 class MarketplaceViewController: UIViewController {
     
@@ -36,7 +37,6 @@ class MarketplaceViewController: UIViewController {
         
         marketTable.delegate = self
         marketTable.dataSource = self
-        marketTable.allowsSelection = false
         marketTable.isUserInteractionEnabled = true
         marketTable.separatorStyle = .none
         marketTable.backgroundColor = .black
@@ -63,7 +63,6 @@ class MarketplaceViewController: UIViewController {
     @objc func refreshMarketData(_ sender: Any) {
         marketTable.reloadData()
         self.refreshControl.endRefreshing()
-        //self.activityIndicatorView.stopAnimating()
     }
 }
 
@@ -80,12 +79,14 @@ extension MarketplaceViewController: UITableViewDelegate, UITableViewDataSource 
         let cell = tableView.dequeueReusableCell(withIdentifier: "MarketTableViewCell") as! MarketTableViewCell
         if let editionsData = DataManager.shared.editionsData?.sorted(by: {$0.id < $1.id}) {
             cell.editionData = editionsData[indexPath.row]
-            print(editionsData[indexPath.row].id)
             if let playsData = DataManager.shared.playsData {
                 cell.playData = playsData.filter({$0.id == editionsData[indexPath.row].playID})[0]
             }
             if let playDataId = DataManager.shared.playDataIds[editionsData[indexPath.row].playID] {
                 cell.playDataId = playDataId
+            }
+            if let sereisData = DataManager.shared.seriesData {
+                cell.seriesData = sereisData.filter({$0.id == editionsData[indexPath.row].seriesID})[0]
             }
         }
         //cell.delegate = self
@@ -93,6 +94,16 @@ extension MarketplaceViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 224
+        return 192
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let config = SFSafariViewController.Configuration()
+        config.barCollapsingEnabled = true
+        
+        let url = URL(string: "https://laligagolazos.com/editions/\(indexPath.row + 1)")!
+        let vc = SFSafariViewController(url: url, configuration: config)
+        present(vc, animated: true)
     }
 }
