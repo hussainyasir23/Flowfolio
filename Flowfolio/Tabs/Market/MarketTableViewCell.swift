@@ -40,9 +40,13 @@ class MarketTableViewCell: UITableViewCell {
     func configureView() {
         contentView.addSubview(cardView)
         cardView.addSubview(playDataImageView)
-        cardView.addSubview(stackView)
         
-        stackView.addArrangedSubview(playerName)
+        cardView.addSubview(playerName)
+        cardView.addSubview(secondaryStack)
+        cardView.addSubview(descLabel)
+        
+        secondaryStack.addArrangedSubview(tier)
+        secondaryStack.addArrangedSubview(editionSize)
     }
     
     func configureViewComponents() {
@@ -53,6 +57,15 @@ class MarketTableViewCell: UITableViewCell {
         
         playerName.textColor = .white
         playerName.text = getPlayerName()
+        
+        tier.textColor = getBackgroundColor()
+        tier.text = getTier()
+        
+        editionSize.textColor = .lightGray
+        editionSize.text = getEditionSize()
+        
+        descLabel.textColor = .lightGray
+        descLabel.text = getDescText()
     }
     
     func configureViewLayout() {
@@ -68,12 +81,18 @@ class MarketTableViewCell: UITableViewCell {
         playDataImageView.widthAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 0.75).isActive = true
         playDataImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
         
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor, constant: -4).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor).isActive = true
-        stackView.topAnchor.constraint(equalTo: cardView.topAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor).isActive = true
         
+        secondaryStack.translatesAutoresizingMaskIntoConstraints = false
+        secondaryStack.centerYAnchor.constraint(equalTo: cardView.centerYAnchor).isActive = true
+        secondaryStack.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
+        
+        playerName.translatesAutoresizingMaskIntoConstraints = false
+        playerName.bottomAnchor.constraint(equalTo: secondaryStack.topAnchor, constant: -8).isActive = true
+        playerName.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
+        
+        descLabel.translatesAutoresizingMaskIntoConstraints = false
+        descLabel.topAnchor.constraint(equalTo: secondaryStack.bottomAnchor, constant: 8).isActive = true
+        descLabel.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -97,17 +116,35 @@ class MarketTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        //stackView.distribution = .equalCentering
-        return stackView
-    }()
-    
     let playerName: UILabel = {
         let playerName = UILabel()
-        playerName.font = .systemFont(ofSize: 16)
+        playerName.font = .systemFont(ofSize: 18, weight: .medium)
         return playerName
+    }()
+    
+    let secondaryStack: UIStackView = {
+        let secondaryStack = UIStackView()
+        secondaryStack.axis = .horizontal
+        secondaryStack.spacing = 4.0
+        return secondaryStack
+    }()
+    
+    let tier: UILabel = {
+        let tier = UILabel()
+        tier.font = .systemFont(ofSize: 15, weight: .regular)
+        return tier
+    }()
+    
+    let editionSize: UILabel = {
+        let editionSize = UILabel()
+        editionSize.font = .systemFont(ofSize: 15, weight: .regular)
+        return editionSize
+    }()
+    
+    let descLabel: UILabel = {
+        let descLabel = UILabel()
+        descLabel.font = .systemFont(ofSize: 15, weight: .regular)
+        return descLabel
     }()
     
     func getBackgroundColor() -> UIColor {
@@ -141,15 +178,39 @@ class MarketTableViewCell: UITableViewCell {
     
     func getPlayerName() -> String {
         var result: String = ""
-        if let editionData = editionData {
-            result += "\(editionData.id). "
-        }
+        //        if let editionData = editionData {
+        //            result += "\(editionData.id). "
+        //        }
         if let playData = playData {
             var playerName = playData.metadata[PlayMetaData.PlayerKnownName.rawValue]!
             if playerName.count == 0 {
-                playerName = playData.metadata[PlayMetaData.PlayerFirstName.rawValue]! + playData.metadata[PlayMetaData.PlayerLastName.rawValue]!
+                playerName = playData.metadata[PlayMetaData.PlayerFirstName.rawValue]! + " " + playData.metadata[PlayMetaData.PlayerLastName.rawValue]!
             }
             result += "\(playerName)"
+        }
+        return result
+    }
+    
+    func getTier() -> String {
+        var result: String = ""
+        if let editionData = editionData {
+            result += "\(editionData.tier.capitalized)"
+        }
+        return result
+    }
+    
+    func getEditionSize() -> String {
+        var result: String = "#/"
+        if let editionData = editionData, let editionSize = editionData.maxMintSize {
+            result += "\(editionSize)"
+        }
+        return result.count == 2 ? "" : result
+    }
+    
+    func getDescText() -> String {
+        var result: String = ""
+        if let playData = playData {
+            result += "\(playData.metadata[PlayMetaData.PlayType.rawValue]!.capitalized), \(playData.metadata[PlayMetaData.MatchHomeTeam.rawValue]!)"
         }
         return result
     }
