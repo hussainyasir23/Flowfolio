@@ -52,6 +52,7 @@ class MarketplaceViewController: UIViewController {
     
     func configureView() {
         view.addSubview(marketTable)
+        
     }
     
     func configureViewComponents() {
@@ -92,7 +93,7 @@ class MarketplaceViewController: UIViewController {
 extension MarketplaceViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let editionsData = DataManager.shared.editionsData {
+        if let editionsData = DataManager.shared.getEditions() {
             return editionsData.count - 1
         }
         return 0
@@ -100,16 +101,16 @@ extension MarketplaceViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MarketTableViewCell") as! MarketTableViewCell
-        if let editionsData = DataManager.shared.editionsData?.sorted(by: {$0.id < $1.id}) {
+        if let editionsData = DataManager.shared.getEditions() {
             cell.editionData = editionsData[indexPath.row]
             if let playsData = DataManager.shared.playsData {
                 cell.playData = playsData.filter({$0.id == editionsData[indexPath.row].playID})[0]
             }
-            if let playDataId = DataManager.shared.playDataIds[editionsData[indexPath.row].playID] {
-                cell.playDataId = playDataId
-            }
             if let sereisData = DataManager.shared.seriesData {
                 cell.seriesData = sereisData.filter({$0.id == editionsData[indexPath.row].seriesID})[0]
+            }
+            if let playerData = DataManager.shared.playerData {
+                cell.playerData = playerData[indexPath.row]
             }
         }
         //cell.delegate = self
@@ -124,7 +125,7 @@ extension MarketplaceViewController: UITableViewDelegate, UITableViewDataSource 
         
         let config = SFSafariViewController.Configuration()
         config.barCollapsingEnabled = true
-        let url = URL(string: "https://laligagolazos.com/editions/\(indexPath.row + 1)")!
+        let url = URL(string: "https://laligagolazos.com/editions/\(DataManager.shared.getEditions()![indexPath.row].id)")!
         let safariView = SFSafariViewController(url: url, configuration: config)
         safariView.view.backgroundColor = .black
         safariView.preferredBarTintColor = .black

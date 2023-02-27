@@ -24,8 +24,10 @@ public class DataManager {
             setNames?.forEach({self.getSetDataByName($0)})
         }
     }
+    var playerData: [PlayerData]?
     
     func getLaLigaGolazosData(){
+        getData()
         getAllEditionsData()
         getAllSeriesData()
         getAllPlaysData()
@@ -123,5 +125,39 @@ public class DataManager {
                 //print(error)
             }
         }
+    }
+    
+    func getData() {
+        if let url = URL(string: "https://retoolapi.dev/RQX3sK/players") {
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let data = data {
+                    do {
+                        let result = try JSONDecoder().decode([PlayerData].self, from: data)
+                        self.playerData = result
+                    } catch let error {
+                        print(error)
+                    }
+                }
+            }.resume()
+        }
+    }
+    
+    func getEditions() -> [EditionData]? {
+        var result: [EditionData] = []
+        if let editionsData = editionsData, let playerData = playerData {
+            let editionsIds: [Int] = playerData.reduce([Int](), { res, item in
+                var arr = res
+                if let i = item.Link.lastIndex(of: "/") {
+                    var substr = item.Link.suffix(from: i)
+                    substr.remove(at: substr.startIndex)
+                    arr.append(Int(substr)!)
+                }
+                return arr
+            })
+            for id in editionsIds {
+                result.append(editionsData.filter({$0.id == id})[0])
+            }
+        }
+        return result
     }
 }

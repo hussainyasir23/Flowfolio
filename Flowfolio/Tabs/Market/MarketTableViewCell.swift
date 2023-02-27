@@ -12,23 +12,21 @@ class MarketTableViewCell: UITableViewCell {
     
     var editionData: EditionData? {
         didSet {
-            if(editionData?.id == 95){
-                
-            }
             configureViewComponents()
         }
     }
     var seriesData: SeriesData?
     var playData: PlayData? {
         didSet {
-            configureViewComponents()
-        }
-    }
-    var playDataId: [String:String]? {
-        didSet {
             if let url = getPlayDataImageUrl() {
                 playDataImageView.load(url)
             }
+            configureViewComponents()
+        }
+    }
+    var playerData: PlayerData? {
+        didSet {
+            configureViewComponents()
         }
     }
     
@@ -47,6 +45,8 @@ class MarketTableViewCell: UITableViewCell {
         cardView.addSubview(playerName)
         cardView.addSubview(secondaryStack)
         cardView.addSubview(descLabel)
+        cardView.addSubview(priceLabel)
+        cardView.addSubview(marketCap)
         
         secondaryStack.addArrangedSubview(tier)
         secondaryStack.addArrangedSubview(editionSize)
@@ -69,6 +69,12 @@ class MarketTableViewCell: UITableViewCell {
         
         descLabel.textColor = .lightGray
         descLabel.text = getDescText()
+        
+        priceLabel.textColor = .white
+        priceLabel.text = getPrice()
+        
+        marketCap.textColor = .lightGray
+        marketCap.text = getMarketCap()
     }
     
     func configureViewLayout() {
@@ -84,9 +90,8 @@ class MarketTableViewCell: UITableViewCell {
         playDataImageView.widthAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 0.75).isActive = true
         playDataImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
         
-        
         secondaryStack.translatesAutoresizingMaskIntoConstraints = false
-        secondaryStack.centerYAnchor.constraint(equalTo: cardView.centerYAnchor).isActive = true
+        secondaryStack.centerYAnchor.constraint(equalTo: cardView.centerYAnchor, constant: -24).isActive = true
         secondaryStack.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
         
         playerName.translatesAutoresizingMaskIntoConstraints = false
@@ -96,6 +101,15 @@ class MarketTableViewCell: UITableViewCell {
         descLabel.translatesAutoresizingMaskIntoConstraints = false
         descLabel.topAnchor.constraint(equalTo: secondaryStack.bottomAnchor, constant: 8).isActive = true
         descLabel.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
+        
+        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+        priceLabel.topAnchor.constraint(equalTo: descLabel.bottomAnchor, constant: 8).isActive = true
+        priceLabel.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
+        
+        marketCap.translatesAutoresizingMaskIntoConstraints = false
+        marketCap.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 8).isActive = true
+        marketCap.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
+        
     }
     
     required init?(coder: NSCoder) {
@@ -150,6 +164,18 @@ class MarketTableViewCell: UITableViewCell {
         return descLabel
     }()
     
+    let priceLabel: UILabel = {
+        let priceLabel = UILabel()
+        priceLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        return priceLabel
+    }()
+    
+    let marketCap: UILabel = {
+        let marketCap = UILabel()
+        marketCap.font = .systemFont(ofSize: 15, weight: .regular)
+        return marketCap
+    }()
+    
     func getBackgroundColor() -> UIColor {
         guard let editionData else {
             return .black
@@ -170,7 +196,7 @@ class MarketTableViewCell: UITableViewCell {
     
     func getPlayDataImageUrl() -> String? {
         
-        if let playDataId = playDataId, let pDI = playDataId[PlayMetaData.PlayDataID.rawValue]  {
+        if let playData = playData, let pDI = playData.metadata[PlayMetaData.PlayDataID.rawValue]  {
             let mediaType = "capture_Hero_Black"
             let baseURL = "https://laligagolazos.com/cdn-cgi/image/width=800,height=800,quality=100/https://storage.googleapis.com/dl-laliga-assets-prod/editions/"
             let imgURL =  "\(pDI)/play_\(pDI)__\(mediaType)_2880_2880_default.png"
@@ -206,6 +232,9 @@ class MarketTableViewCell: UITableViewCell {
         var result: String = "#/"
         if let editionData = editionData, let editionSize = editionData.maxMintSize {
             result += "\(editionSize)"
+            if let playData = playData {
+                result += ", \(playData.metadata[PlayMetaData.PlayType.rawValue]!.capitalized)"
+            }
         }
         return result.count == 2 ? "" : result
     }
@@ -213,7 +242,23 @@ class MarketTableViewCell: UITableViewCell {
     func getDescText() -> String {
         var result: String = ""
         if let playData = playData {
-            result += "\(playData.metadata[PlayMetaData.PlayType.rawValue]!.capitalized), \(playData.metadata[PlayMetaData.MatchHomeTeam.rawValue]!)"
+            result += "\(playData.metadata[PlayMetaData.MatchHomeTeam.rawValue]!) Vs \(playData.metadata[PlayMetaData.MatchAwayTeam.rawValue]!)"
+        }
+        return result
+    }
+    
+    func getPrice() -> String {
+        var result: String = ""
+        if let playerData = playerData {
+            result = playerData.Price
+        }
+        return result
+    }
+    
+    func getMarketCap() -> String {
+        var result: String = ""
+        if let playerData = playerData {
+            result += "MCap \(playerData.MarketCap)"
         }
         return result
     }
