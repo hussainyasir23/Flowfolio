@@ -19,12 +19,35 @@ class MarketplaceViewController: UIViewController {
         configureViewLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        super.viewWillAppear(animated)
+        
+        self.navigationTitleImageView.image = UIImage(named: "GolazosLogo.png")
+        self.navigationTitleImageView.contentMode = .scaleAspectFit
+        self.navigationTitleImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let navC = self.navigationController{
+            navC.navigationBar.addSubview(self.navigationTitleImageView)
+            self.navigationTitleImageView.centerXAnchor.constraint(equalTo: navC.navigationBar.centerXAnchor).isActive = true
+            self.navigationTitleImageView.centerYAnchor.constraint(equalTo: navC.navigationBar.centerYAnchor, constant: 0).isActive = true
+            self.navigationTitleImageView.widthAnchor.constraint(equalTo: navC.navigationBar.widthAnchor, multiplier: 0.2).isActive = true
+            self.navigationTitleImageView.heightAnchor.constraint(equalTo: navC.navigationBar.widthAnchor, multiplier: 0.088).isActive = true
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationTitleImageView.removeFromSuperview()
+    }
+    
     lazy var marketTable: UITableView = {
         let marketTable = UITableView()
-        
+        marketTable.showsVerticalScrollIndicator = false
         return marketTable
     }()
     
+    lazy var navigationTitleImageView = UIImageView()
     private let refreshControl = UIRefreshControl()
     
     func configureView() {
