@@ -124,9 +124,12 @@ extension MarketplaceViewController: UITableViewDelegate, UITableViewDataSource 
         
         let config = SFSafariViewController.Configuration()
         config.barCollapsingEnabled = true
-        
         let url = URL(string: "https://laligagolazos.com/editions/\(indexPath.row + 1)")!
-        let vc = SFSafariViewController(url: url, configuration: config)
-        present(vc, animated: true)
+        let safariView = SFSafariViewController(url: url, configuration: config)
+        safariView.view.backgroundColor = .black
+        safariView.preferredBarTintColor = .black
+        safariView.preferredControlTintColor = .white
+        safariView.dismissButtonStyle = .close
+        present(safariView, animated: true)
     }
 }
