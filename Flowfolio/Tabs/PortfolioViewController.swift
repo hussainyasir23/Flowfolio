@@ -37,7 +37,7 @@ class PortfolioViewController: UIViewController {
         let connectButton = UIButton()
         connectButton.translatesAutoresizingMaskIntoConstraints = false
         connectButton.setTitle("Connect Wallet", for: .normal)
-        connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold, width: .standard)
+        connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         connectButton.layer.cornerRadius = 8.9
         connectButton.layer.cornerCurve = .continuous
         connectButton.sizeToFit()
@@ -84,7 +84,7 @@ class PortfolioViewController: UIViewController {
         //setGradientBackground()
         view.backgroundColor = .black
         
-        connectButton.backgroundColor = #colorLiteral(red: 0.1079129651, green: 0.8437187672, blue: 0.3764159679, alpha: 1)
+        connectButton.backgroundColor = .white//#colorLiteral(red: 0.1079129651, green: 0.8437187672, blue: 0.3764159679, alpha: 1)
         connectButton.setTitleColor(.black, for: .normal)
         connectButton.titleLabel?.textAlignment = .center
     }

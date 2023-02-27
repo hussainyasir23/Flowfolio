@@ -12,6 +12,9 @@ class MarketTableViewCell: UITableViewCell {
     
     var editionData: EditionData? {
         didSet {
+            if(editionData?.id == 95){
+                
+            }
             configureViewComponents()
         }
     }
