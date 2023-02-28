@@ -38,7 +38,7 @@ class PortfolioViewController: UIViewController {
         connectButton.translatesAutoresizingMaskIntoConstraints = false
         connectButton.setTitle("Connect Wallet", for: .normal)
         connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
-        connectButton.layer.cornerRadius = 8.9
+        connectButton.layer.cornerRadius = 8.0
         connectButton.layer.cornerCurve = .continuous
         connectButton.sizeToFit()
         connectButton.addTarget(self, action: #selector(didTapConnect), for: .touchUpInside)

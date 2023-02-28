@@ -41,15 +41,17 @@ class MarketTableViewCell: UITableViewCell {
     func configureView() {
         contentView.addSubview(cardView)
         cardView.addSubview(playDataImageView)
-        
         cardView.addSubview(playerName)
         cardView.addSubview(secondaryStack)
         cardView.addSubview(descLabel)
-        cardView.addSubview(priceLabel)
+        cardView.addSubview(priceStack)
         cardView.addSubview(marketCap)
         
         secondaryStack.addArrangedSubview(tier)
         secondaryStack.addArrangedSubview(editionSize)
+        
+        priceStack.addArrangedSubview(askLabel)
+        priceStack.addArrangedSubview(priceLabel)
     }
     
     func configureViewComponents() {
@@ -57,6 +59,9 @@ class MarketTableViewCell: UITableViewCell {
         contentView.backgroundColor = .black
         cardView.layer.borderWidth = 1.0
         cardView.getBorderAnimation(from: UIColor.black.cgColor, to: getBackgroundColor().cgColor)
+        cardView.layer.shadowColor = getBackgroundColor().cgColor.copy(alpha: 1)
+        cardView.layer.shadowOpacity = 1.0
+        cardView.layer.shadowRadius = 5.0
         
         playerName.textColor = .white
         playerName.text = getPlayerName()
@@ -69,6 +74,9 @@ class MarketTableViewCell: UITableViewCell {
         
         descLabel.textColor = .lightGray
         descLabel.text = getDescText()
+        
+        askLabel.textColor = .white
+        askLabel.text = "Lowest Ask:"
         
         priceLabel.textColor = .white
         priceLabel.text = getPrice()
@@ -85,10 +93,10 @@ class MarketTableViewCell: UITableViewCell {
         cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4).isActive = true
         
         playDataImageView.translatesAutoresizingMaskIntoConstraints = false
-        playDataImageView.centerYAnchor.constraint(equalTo: cardView.centerYAnchor).isActive = true
-        playDataImageView.heightAnchor.constraint(equalTo: cardView.heightAnchor).isActive = true
-        playDataImageView.widthAnchor.constraint(equalTo: cardView.heightAnchor, multiplier: 0.75).isActive = true
-        playDataImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor).isActive = true
+        playDataImageView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor,constant: 4).isActive = true
+        playDataImageView.topAnchor.constraint(equalTo: cardView.topAnchor, constant: 4).isActive = true
+        playDataImageView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -4).isActive = true
+        playDataImageView.trailingAnchor.constraint(equalTo: playDataImageView.leadingAnchor, constant: 132).isActive = true
         
         secondaryStack.translatesAutoresizingMaskIntoConstraints = false
         secondaryStack.centerYAnchor.constraint(equalTo: cardView.centerYAnchor, constant: -24).isActive = true
@@ -102,12 +110,12 @@ class MarketTableViewCell: UITableViewCell {
         descLabel.topAnchor.constraint(equalTo: secondaryStack.bottomAnchor, constant: 8).isActive = true
         descLabel.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
         
-        priceLabel.translatesAutoresizingMaskIntoConstraints = false
-        priceLabel.topAnchor.constraint(equalTo: descLabel.bottomAnchor, constant: 8).isActive = true
-        priceLabel.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
+        priceStack.translatesAutoresizingMaskIntoConstraints = false
+        priceStack.topAnchor.constraint(equalTo: descLabel.bottomAnchor, constant: 8).isActive = true
+        priceStack.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
         
         marketCap.translatesAutoresizingMaskIntoConstraints = false
-        marketCap.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 8).isActive = true
+        marketCap.topAnchor.constraint(equalTo: priceStack.bottomAnchor, constant: 8).isActive = true
         marketCap.leadingAnchor.constraint(equalTo: playDataImageView.trailingAnchor).isActive = true
         
     }
@@ -121,9 +129,6 @@ class MarketTableViewCell: UITableViewCell {
         cardView.backgroundColor = .black
         cardView.layer.cornerRadius = 8.0
         cardView.layer.masksToBounds = false
-        cardView.layer.shadowColor = UIColor.black.cgColor.copy(alpha: 0.2)
-        cardView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        cardView.layer.shadowOpacity = 0.8
         return cardView
     }()
     
@@ -162,6 +167,19 @@ class MarketTableViewCell: UITableViewCell {
         let descLabel = UILabel()
         descLabel.font = .systemFont(ofSize: 15, weight: .regular)
         return descLabel
+    }()
+    
+    let priceStack: UIStackView = {
+        let priceStack = UIStackView()
+        priceStack.axis = .horizontal
+        priceStack.spacing = 4.0
+        return priceStack
+    }()
+    
+    let askLabel: UILabel = {
+       let askLabel = UILabel()
+        askLabel.font = .systemFont(ofSize: 15, weight: .thin)
+        return askLabel
     }()
     
     let priceLabel: UILabel = {
@@ -285,6 +303,7 @@ extension UIImageView {
                     DispatchQueue.main.async {
                         self?.image = image
                         self?.contentMode = .scaleAspectFill
+                        self?.clipsToBounds = true
                     }
                 }
             }
