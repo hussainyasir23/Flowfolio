@@ -33,11 +33,14 @@ class MarketplaceViewController: UIViewController {
             self.navigationTitleImageView.widthAnchor.constraint(equalTo: navC.navigationBar.widthAnchor, multiplier: 0.2).isActive = true
             self.navigationTitleImageView.heightAnchor.constraint(equalTo: navC.navigationBar.widthAnchor, multiplier: 0.088).isActive = true
         }
+        
+        self.parent?.navigationItem.rightBarButtonItems = [UIBarButtonItem(image: UIImage(named: "BookMarkIcon.png")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(didTapBookMark))]
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationTitleImageView.removeFromSuperview()
+        self.parent?.navigationItem.rightBarButtonItems = []
     }
     
     lazy var marketTable: UITableView = {
@@ -85,6 +88,10 @@ class MarketplaceViewController: UIViewController {
     @objc func refreshMarketData(_ sender: Any) {
         marketTable.reloadData()
         self.refreshControl.endRefreshing()
+    }
+    
+    @objc func didTapBookMark() {
+        
     }
 }
 

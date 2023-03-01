@@ -178,7 +178,7 @@ class MarketTableViewCell: UITableViewCell {
     
     let askLabel: UILabel = {
        let askLabel = UILabel()
-        askLabel.font = .systemFont(ofSize: 15, weight: .thin)
+        askLabel.font = .systemFont(ofSize: 15, weight: .light)
         return askLabel
     }()
     
