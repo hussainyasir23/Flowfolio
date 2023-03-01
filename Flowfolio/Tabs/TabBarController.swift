@@ -49,6 +49,8 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
         
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         UINavigationBar.appearance().standardAppearance = appearance
         
         self.tabBar.isTranslucent = true

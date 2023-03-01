@@ -21,15 +21,14 @@ class MarketplaceViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        super.viewWillAppear(animated)
         
         self.navigationTitleImageView.image = UIImage(named: "GolazosLogo.png")
         self.navigationTitleImageView.contentMode = .scaleAspectFit
         self.navigationTitleImageView.translatesAutoresizingMaskIntoConstraints = false
         
-        if let navC = self.navigationController{
+        if let navC = self.navigationController {
             navC.navigationBar.addSubview(self.navigationTitleImageView)
-            self.navigationTitleImageView.centerXAnchor.constraint(equalTo: navC.navigationBar.centerXAnchor).isActive = true
+            self.navigationTitleImageView.leadingAnchor.constraint(equalTo: navC.navigationBar.leadingAnchor, constant: 8.0).isActive = true
             self.navigationTitleImageView.centerYAnchor.constraint(equalTo: navC.navigationBar.centerYAnchor, constant: 0).isActive = true
             self.navigationTitleImageView.widthAnchor.constraint(equalTo: navC.navigationBar.widthAnchor, multiplier: 0.2).isActive = true
             self.navigationTitleImageView.heightAnchor.constraint(equalTo: navC.navigationBar.widthAnchor, multiplier: 0.088).isActive = true
@@ -52,7 +51,6 @@ class MarketplaceViewController: UIViewController {
     
     func configureView() {
         view.addSubview(marketTable)
-        
     }
     
     func configureViewComponents() {
