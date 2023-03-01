@@ -18,6 +18,10 @@ class DiscoverViewController: UIViewController {
         configureViewLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.parent?.navigationItem.title = "Discover"
+    }
+    
     func configureView() {
         self.view.backgroundColor = .black
     }

@@ -18,6 +18,16 @@ class ProfileViewController: UIViewController {
         configureViewLayout()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.parent?.navigationItem.title = "Profile"
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        //self.parent?.navigationItem.title = ""
+    }
+    
     func configureView() {
         
         view.addSubview(nameLabel)
@@ -112,15 +122,16 @@ class ProfileViewController: UIViewController {
         phoneLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         phoneLabel.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 8).isActive = true
         
-        userImageView.image = UIImage(named: "ProfilePhoto")
+        userImageView.image = UIImage(named: "RacoonIcon")
         userImageView.clipsToBounds = true
-        userImageView.contentMode = .center
+        userImageView.contentMode = .scaleAspectFit
         userImageView.layer.borderWidth = 2
         userImageView.layer.borderColor = UIColor.lightGray.cgColor//#colorLiteral(red: 0.9183054566, green: 0.3281622529, blue: 0.3314601779, alpha: 1)
         userImageView.layer.cornerRadius = 36
         userImageView.translatesAutoresizingMaskIntoConstraints = false
         userImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         userImageView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        userImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         userImageView.widthAnchor.constraint(equalTo: userImageView.heightAnchor, constant: 0).isActive = true
         userImageView.bottomAnchor.constraint(equalTo: generalLabel.topAnchor, constant: -16).isActive = true
         
@@ -178,7 +189,7 @@ class ProfileViewController: UIViewController {
         securityStackView.distribution = .fillProportionally
         securityStackView.spacing = 16
         
-        profileIcon.image = UIImage(named: "ProfilePhoto")
+        profileIcon.image = UIImage(named: "AccountsIcon")
         profileIcon.contentMode = .scaleAspectFit
         profileIcon.translatesAutoresizingMaskIntoConstraints = false
         profileIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -189,7 +200,7 @@ class ProfileViewController: UIViewController {
         profileLabel.font = .systemFont(ofSize: 15)
         profileLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        notificationIcon.image = UIImage(named: "Bell")
+        notificationIcon.image = UIImage(named: "BellIcon")
         notificationIcon.contentMode = .scaleAspectFit
         notificationIcon.translatesAutoresizingMaskIntoConstraints = false
         notificationIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -200,7 +211,7 @@ class ProfileViewController: UIViewController {
         notificationLabel.font = .systemFont(ofSize: 15)
         notificationLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        paymentIcon.image = UIImage(named: "CardPay")
+        paymentIcon.image = UIImage(named: "CardIcon")
         paymentIcon.contentMode = .scaleAspectFit
         paymentIcon.translatesAutoresizingMaskIntoConstraints = false
         paymentIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -211,7 +222,7 @@ class ProfileViewController: UIViewController {
         paymentLabel.font = .systemFont(ofSize: 15)
         paymentLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        preferenceIcon.image = UIImage(named: "Preferences")
+        preferenceIcon.image = UIImage(named: "AdjustmentIcon")
         preferenceIcon.contentMode = .scaleAspectFit
         preferenceIcon.translatesAutoresizingMaskIntoConstraints = false
         preferenceIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -222,7 +233,7 @@ class ProfileViewController: UIViewController {
         preferenceLabel.font = .systemFont(ofSize: 15)
         preferenceLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        securityIcon.image = UIImage(named: "Security")
+        securityIcon.image = UIImage(named: "PrivacyIcon")
         securityIcon.contentMode = .scaleAspectFit
         securityIcon.translatesAutoresizingMaskIntoConstraints = false
         securityIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -295,7 +306,7 @@ class ProfileViewController: UIViewController {
         aboutStackView.distribution = .fillProportionally
         aboutStackView.spacing = 16
         
-        termsIcon.image = UIImage(named: "Terms")
+        termsIcon.image = UIImage(named: "TermsIcon")
         termsIcon.contentMode = .scaleAspectFit
         termsIcon.translatesAutoresizingMaskIntoConstraints = false
         termsIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -306,7 +317,7 @@ class ProfileViewController: UIViewController {
         termsLabel.font = .systemFont(ofSize: 15)
         termsLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        privacyIcon.image = UIImage(named: "Lock")
+        privacyIcon.image = UIImage(named: "LockIcon")
         privacyIcon.contentMode = .scaleAspectFit
         privacyIcon.translatesAutoresizingMaskIntoConstraints = false
         privacyIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -317,7 +328,7 @@ class ProfileViewController: UIViewController {
         privacyLabel.font = .systemFont(ofSize: 15)
         privacyLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        supportIcon.image = UIImage(named: "Support")
+        supportIcon.image = UIImage(named: "HeadsetIcon")
         supportIcon.contentMode = .scaleAspectFit
         supportIcon.translatesAutoresizingMaskIntoConstraints = false
         supportIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -328,7 +339,7 @@ class ProfileViewController: UIViewController {
         supportLabel.font = .systemFont(ofSize: 15)
         supportLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        rateIcon.image = UIImage(named: "RateUs")
+        rateIcon.image = UIImage(named: "RateIcon")
         rateIcon.contentMode = .scaleAspectFit
         rateIcon.translatesAutoresizingMaskIntoConstraints = false
         rateIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -339,7 +350,7 @@ class ProfileViewController: UIViewController {
         rateLabel.font = .systemFont(ofSize: 15)
         rateLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        feedbackIcon.image = UIImage(named: "Feedback")
+        feedbackIcon.image = UIImage(named: "FeedbackIcon")
         feedbackIcon.contentMode = .scaleAspectFit
         feedbackIcon.translatesAutoresizingMaskIntoConstraints = false
         feedbackIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -350,7 +361,7 @@ class ProfileViewController: UIViewController {
         feedbackLabel.font = .systemFont(ofSize: 15)
         feedbackLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        bugIcon.image = UIImage(named: "Bug")
+        bugIcon.image = UIImage(named: "BugIcon")
         bugIcon.contentMode = .scaleAspectFit
         bugIcon.translatesAutoresizingMaskIntoConstraints = false
         bugIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true
@@ -361,7 +372,7 @@ class ProfileViewController: UIViewController {
         bugLabel.font = .systemFont(ofSize: 15)
         bugLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        aboutIcon.image = UIImage(named: "Info")
+        aboutIcon.image = UIImage(named: "InfoIcon")
         aboutIcon.contentMode = .scaleAspectFit
         aboutIcon.translatesAutoresizingMaskIntoConstraints = false
         aboutIcon.widthAnchor.constraint(equalToConstant: 17.5).isActive = true

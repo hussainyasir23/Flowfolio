@@ -21,7 +21,7 @@ class MarketplaceViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        self.parent?.navigationItem.title = ""
         self.navigationTitleImageView.image = UIImage(named: "GolazosLogo.png")
         self.navigationTitleImageView.contentMode = .scaleAspectFit
         self.navigationTitleImageView.translatesAutoresizingMaskIntoConstraints = false

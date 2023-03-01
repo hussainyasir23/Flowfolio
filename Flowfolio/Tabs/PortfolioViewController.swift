@@ -11,46 +11,21 @@ import FCL
 
 class PortfolioViewController: UIViewController {
     
-    var isUserLoggedIn: Bool = false {
-        didSet {
-            if isUserLoggedIn {
-                print("*** Debug: User Login Successful ***")
-            }
-            else {
-                print("*** Debug: User Login Failed ***")
-            }
-        }
-    }
-    
     var isInit: Bool = false {
         didSet {
             if isInit {
                 print("*** Debug: User Init Successful ***")
+                showPortfolio()
+                self.parent?.navigationItem.rightBarButtonItems = [UIBarButtonItem(image: UIImage(named: "LogOutIcon.png")?.withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(logout))]
             }
             else {
                 print("*** Debug: User Init Failed ***")
+                configureView()
+                configureViewLayout()
+                self.parent?.navigationItem.rightBarButtonItems = []
             }
         }
     }
-    
-    lazy var connectButton: UIButton = {
-        let connectButton = UIButton()
-        connectButton.translatesAutoresizingMaskIntoConstraints = false
-        connectButton.setTitle("Connect Wallet", for: .normal)
-        connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
-        connectButton.layer.cornerRadius = 8.0
-        connectButton.layer.cornerCurve = .continuous
-        connectButton.sizeToFit()
-        connectButton.addTarget(self, action: #selector(didTapConnect), for: .touchUpInside)
-        return connectButton
-    }()
-    
-    lazy var logoImageView: UIImageView = {
-        let logoImageView = UIImageView()
-        logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        logoImageView.image = UIImage(named: "Logo")
-        return logoImageView
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,18 +36,12 @@ class PortfolioViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if let _ = fcl.currentUser {
-            isUserLoggedIn = true
-        }
-        else {
-            isUserLoggedIn = false
-        }
+        self.parent?.navigationItem.title = "Portfolio"
         check()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        view.alpha = 1.0
     }
     
     func configureView() {
@@ -101,12 +70,79 @@ class PortfolioViewController: UIViewController {
         connectButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
     
+    lazy var connectButton: UIButton = {
+        let connectButton = UIButton()
+        connectButton.translatesAutoresizingMaskIntoConstraints = false
+        connectButton.setTitle("Connect Wallet", for: .normal)
+        connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
+        connectButton.layer.cornerRadius = 8.0
+        connectButton.layer.cornerCurve = .continuous
+        connectButton.sizeToFit()
+        connectButton.addTarget(self, action: #selector(didTapConnect), for: .touchUpInside)
+        return connectButton
+    }()
+    
+    lazy var logoImageView: UIImageView = {
+        let logoImageView = UIImageView()
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        logoImageView.image = UIImage(named: "Logo")
+        return logoImageView
+    }()
+    
+    lazy var connectionLabel: UILabel = {
+        let connectionLabel = UILabel()
+        connectionLabel.text = "Wallet Connection Successful"
+        connectionLabel.textColor = .lightGray
+        connectionLabel.font = .systemFont(ofSize: 15)
+        return connectionLabel
+    }()
+    
+    lazy var addressLabel: UILabel = {
+        let addressLabel = UILabel()
+        addressLabel.text = "Wallet Address: "
+        addressLabel.textColor = .lightGray
+        addressLabel.font = .systemFont(ofSize: 15)
+        return addressLabel
+    }()
+    
+    lazy var walletAddressLabel: UILabel = {
+        let walletAddressLabel = UILabel()
+        walletAddressLabel.textColor = .white
+        walletAddressLabel.font = .systemFont(ofSize: 15)
+        return walletAddressLabel
+    }()
+    
+    lazy var nothingLabel: UILabel = {
+        let nothingLabel = UILabel()
+        nothingLabel.textColor = .white
+        nothingLabel.textAlignment = .center
+        nothingLabel.text = "Nothing to show.\nYou do not hold any Golazos."
+        nothingLabel.numberOfLines = 0
+        return nothingLabel
+    }()
+    
+    lazy var marketButton: UIButton = {
+        let marketButton = UIButton()
+        marketButton.backgroundColor = .white
+        marketButton.setTitleColor(.black, for: .normal)
+        marketButton.titleLabel?.textAlignment = .center
+        marketButton.setTitle("Checkout Marketplace", for: .normal)
+        marketButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
+        marketButton.layer.cornerRadius = 8.0
+        marketButton.layer.cornerCurve = .continuous
+        marketButton.sizeToFit()
+        marketButton.addTarget(self, action: #selector(didTapMarket), for: .touchUpInside)
+        return marketButton
+    }()
+    
     @objc func didTapConnect() {
         fcl.openDiscovery()
         DataManager.shared.invoke()
     }
     
-    
+    @objc func didTapMarket() {
+        
+    }
     
     func setGradientBackground() {
         let colorTop = #colorLiteral(red: 0.03900336474, green: 0.5773818493, blue: 0.858311832, alpha: 1).cgColor
@@ -130,5 +166,43 @@ class PortfolioViewController: UIViewController {
                 print(error)
             }
         }
+    }
+    
+    @objc func logout(){
+        
+    }
+    
+    func showPortfolio() {
+        connectButton.removeFromSuperview()
+        logoImageView.removeFromSuperview()
+        walletAddressLabel.text = fcl.currentUser?.addr.hex
+        
+        view.addSubview(connectionLabel)
+        view.addSubview(addressLabel)
+        view.addSubview(walletAddressLabel)
+        view.addSubview(nothingLabel)
+        view.addSubview(marketButton)
+        
+        connectionLabel.translatesAutoresizingMaskIntoConstraints = false
+        connectionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8).isActive = true
+        connectionLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+        
+        addressLabel.translatesAutoresizingMaskIntoConstraints = false
+        addressLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 8).isActive = true
+        addressLabel.topAnchor.constraint(equalTo: connectionLabel.bottomAnchor, constant: 4).isActive = true
+        
+        walletAddressLabel.translatesAutoresizingMaskIntoConstraints = false
+        walletAddressLabel.leadingAnchor.constraint(equalTo: addressLabel.trailingAnchor, constant: 4).isActive = true
+        walletAddressLabel.topAnchor.constraint(equalTo: addressLabel.topAnchor).isActive = true
+        
+        nothingLabel.translatesAutoresizingMaskIntoConstraints = false
+        nothingLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        nothingLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        
+        marketButton.translatesAutoresizingMaskIntoConstraints = false
+        marketButton.topAnchor.constraint(equalTo: nothingLabel.bottomAnchor, constant: 8).isActive = true
+        marketButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        marketButton.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.75).isActive = true
+        marketButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
 }

@@ -25,7 +25,6 @@ class SearchViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.parent?.navigationItem.title = ""
     }
     
     func configureView() {
