@@ -24,7 +24,7 @@ class FlowManager {
         let metadata = FCL.Metadata(appName: "Flowfolio",
                                     appDescription: "The NFT portfolio app built using Flow",
                                     appIcon: URL(string: "https://raw.githubusercontent.com/hussainyasir23/Flowfolio/main/Flowfolio/Resources/Assets.xcassets/AppIcon.appiconset/180.png")!,
-                                    location: URL(string: "https://github.com/hussainyasir23/Flowfolio")!,
+                                    location: URL(string: "https://flowfolio-app.vercel.app")!,
                                     accountProof: accountProof,
                                     walletConnectConfig: walletConnect)
         
