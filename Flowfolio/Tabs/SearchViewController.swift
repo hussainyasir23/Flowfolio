@@ -7,8 +7,20 @@
 
 import Foundation
 import UIKit
+import SafariServices
 
 class SearchViewController: UIViewController {
+    
+    var searchText: String = "" {
+        didSet {
+            updateEditionsDataForSearch()
+            searchTable.reloadData()
+        }
+    }
+    
+    var editionsData = DataManager.shared.getEditions()
+    var playsData = DataManager.shared.playsData
+    var editionsDataForSearch: [EditionData] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,6 +28,7 @@ class SearchViewController: UIViewController {
         configureView()
         configureViewComponents()
         configureViewLayout()
+        editionsDataForSearch = Array(editionsData?.suffix(5) ?? [])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,28 +92,45 @@ class SearchViewController: UIViewController {
         searchBar.searchBarStyle = .minimal
         return searchBar
     }()
+    
+    func updateEditionsDataForSearch() {
+        if searchText == "" {
+            editionsDataForSearch = Array(editionsData?.suffix(5) ?? [])
+        }
+        else {
+            editionsDataForSearch = []
+            editionsData?.forEach({
+                let playID = $0.playID
+                if let meta = playsData?.filter({$0.id == playID})[0].metadata {
+                    if meta[PlayMetaData.PlayerKnownName.rawValue]!.hasPrefix(searchText) ||
+                        meta[PlayMetaData.PlayerFirstName.rawValue]!.hasPrefix(searchText) ||
+                        meta[PlayMetaData.PlayerLastName.rawValue]!.hasPrefix(searchText) {
+                        editionsDataForSearch.append($0)
+                    }
+                }
+            })
+        }
+    }
 }
 
 extension SearchViewController: UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UISearchResultsUpdating {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return editionsDataForSearch.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MarketTableViewCell") as! MarketTableViewCell
-        if var editionsData = DataManager.shared.getEditions() {
-            editionsData = editionsData.reversed()
-            cell.editionData = editionsData[indexPath.row]
-            if let playsData = DataManager.shared.playsData {
-                cell.playData = playsData.filter({$0.id == editionsData[indexPath.row].playID})[0]
-            }
-            if let sereisData = DataManager.shared.seriesData {
-                cell.seriesData = sereisData.filter({$0.id == editionsData[indexPath.row].seriesID})[0]
-            }
-            if let playerData = DataManager.shared.playerData {
-                cell.playerData = playerData[indexPath.row]
-            }
+        var editionsDataSource = editionsDataForSearch
+        cell.editionData = editionsDataSource[indexPath.row]
+        if let playsData = DataManager.shared.playsData {
+            cell.playData = playsData.filter({$0.id == editionsDataSource[indexPath.row].playID})[0]
+        }
+        if let sereisData = DataManager.shared.seriesData {
+            cell.seriesData = sereisData.filter({$0.id == editionsDataSource[indexPath.row].seriesID})[0]
+        }
+        if let playerData = DataManager.shared.playerData {
+            cell.playerData = playerData[indexPath.row]
         }
         //cell.delegate = self
         return cell
@@ -108,6 +138,18 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate, UISe
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         192
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let config = SFSafariViewController.Configuration()
+        config.barCollapsingEnabled = true
+        let url = URL(string: "https://laligagolazos.com/editions/\(editionsDataForSearch[indexPath.row].id)")!
+        let safariView = SFSafariViewController(url: url, configuration: config)
+        safariView.view.backgroundColor = .black
+        safariView.preferredBarTintColor = .black
+        safariView.preferredControlTintColor = .white
+        safariView.dismissButtonStyle = .close
+        present(safariView, animated: true)
     }
     
     func updateSearchResults(for searchController: UISearchController) {
@@ -123,10 +165,18 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate, UISe
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        
+        searchText = searchBar.text ?? ""
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.searchText = searchText
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        
+        searchText = searchBar.text ?? ""
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        searchBar.endEditing(true)
     }
 }
